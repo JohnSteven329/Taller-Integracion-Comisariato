@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Comisariato | Menú Java</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin:0; font:15px/1.5 system-ui,sans-serif; background:#f1f5f9; color:#172b42; }
+    header { background:#15364e; color:white; padding:24px max(20px,calc((100% - 1100px)/2)); }
+    header h1 { margin:5px 0; font-size:28px; } header p { margin:0; color:#d7e7ef; }
+    header a { color:white; } .eyebrow { font-size:12px; letter-spacing:1.5px; font-weight:700; }
+    main { max-width:1140px; margin:auto; padding:24px 20px 40px; }
+    .layout { display:grid; grid-template-columns:1fr 1fr; gap:20px; align-items:start; }
+    section { background:white; border:1px solid #d8e1e7; border-radius:12px; padding:20px; }
+    h2 { margin:0 0 12px; font-size:19px; } h3 { font-size:15px; margin:0 0 6px; }
+    form { border-top:1px solid #dce4eb; padding:16px 0; } form:last-child { padding-bottom:0; }
+    label { display:block; font-size:13px; font-weight:600; margin:9px 0; }
+    input { width:100%; font:inherit; display:block; padding:8px 10px; border:1px solid #a8bbc8; border-radius:6px; margin-top:4px; color:inherit; }
+    button { background:#12667c; color:white; border:0; border-radius:6px; padding:10px 14px; font:inherit; font-weight:600; cursor:pointer; margin-top:6px; }
+    button:disabled { opacity:.55; cursor:wait; } button.danger { background:#9d3434; }
+    .fields { display:grid; grid-template-columns:1fr 1fr; gap:0 12px; }
+    .result { margin-top:20px; } pre { background:#152b3c; color:#e7f0f5; padding:16px; border-radius:8px; overflow:auto; max-height:430px; min-height:100px; white-space:pre-wrap; overflow-wrap:anywhere; }
+    .status { font-weight:700; } .ok { color:#146b42; } .bad { color:#a12d2d; }
+    .hint { font-size:13px; color:#526676; margin:5px 0; }
+    :focus-visible { outline:3px solid #cf941d; outline-offset:2px; }
+    @media(max-width:760px) { .layout,.fields { grid-template-columns:1fr; } }
+  </style>
+  <script src="menu.js" defer></script>
+</head>
+<body>
+<header>
+  <div class="eyebrow">PUCE MANABÍ · TALLER DE INTEGRACIÓN</div>
+  <h1>Comisariato — API Java</h1>
+  <p>Menú de operaciones · Spring Boot y PostgreSQL</p>
+  <p><a href="/swagger-ui.html">Swagger UI</a> · <a href="/actuator/health">Estado del servicio</a></p>
+</header>
+<main>
+  <div class="layout">
+    <section>
+      <h2>Consultas</h2>
+      <form id="stock">
+        <h3>01 · Productos con stock bajo</h3>
+        <button>Consultar stock bajo</button>
+      </form>
+      <form id="movimientos">
+        <h3>02 · Movimientos por producto</h3>
+        <label>ID del producto<input name="productoId" type="number" min="1" max="2147483647" step="1" value="1" required></label>
+        <button>Consultar movimientos</button>
+      </form>
+      <form id="empleado">
+        <h3>03 · Ventas por empleado</h3>
+        <label>ID del empleado<input name="empleadoId" type="number" min="1" max="2147483647" step="1" value="1" required></label>
+        <button>Consultar ventas</button>
+      </form>
+    </section>
+    <section>
+      <h2>Gestión de ventas</h2>
+      <form id="registrar">
+        <h3>04 · Registrar venta</h3>
+        <div class="fields">
+          <label>Número de factura<input name="numeroFactura" maxlength="20" required></label>
+          <label>Forma de pago<input name="formaPago" maxlength="30" value="Efectivo" required></label>
+          <label>ID del cliente<input name="clienteId" type="number" min="1" max="2147483647" step="1" value="1" required></label>
+          <label>ID del empleado<input name="empleadoId" type="number" min="1" max="2147483647" step="1" value="1" required></label>
+          <label>ID del producto<input name="productoId" type="number" min="1" max="2147483647" step="1" value="1" required></label>
+          <label>Cantidad<input name="cantidad" type="number" min="1" max="2147483647" step="1" value="2" required></label>
+        </div>
+        <p class="hint">El procedimiento almacenado calcula el subtotal, IVA y total.</p>
+        <button>Registrar venta</button>
+      </form>
+      <form id="anular">
+        <h3>05 · Anular venta</h3>
+        <div class="fields">
+          <label>ID de venta<input name="ventaId" type="number" min="1" max="2147483647" step="1" required></label>
+          <label>ID del empleado<input name="empleadoId" type="number" min="1" max="2147483647" step="1" value="1" required></label>
+        </div>
+        <p class="hint">Al registrar una venta, su ID aparece aquí automáticamente.</p>
+        <button class="danger">Anular venta</button>
+      </form>
+    </section>
+  </div>
+  <section class="result" aria-labelledby="resultado-titulo">
+    <h2 id="resultado-titulo">Resultado de la operación</h2>
+    <div id="estado" class="status" role="status">Selecciona una operación.</div>
+    <pre id="respuesta">Sin solicitudes ejecutadas.</pre>
+  </section>
+</main>
+</body>
+</html>
