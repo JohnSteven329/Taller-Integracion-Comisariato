@@ -1,0 +1,23 @@
+info:
+  name: 15 - Empleado inexistente
+  type: http
+  seq: 15
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/empleados/999/ventas"
+  auth: none
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Responde 404", function() {
+          expect(res.status).to.equal(404);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

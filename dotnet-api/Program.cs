@@ -81,6 +81,8 @@ var app = builder.Build();
 
 app.UseMiddleware<GlobalExceptionMiddleware>();
 
+app.UseStaticFiles();
+
 app.UseSwagger();
 app.UseSwaggerUI(options =>
 {
@@ -109,3 +111,8 @@ app.MapHealthChecks("/health", new HealthCheckOptions
 });
 
 app.Run();
+
+/// <summary>Punto de entrada expuesto para las pruebas de integración.</summary>
+public partial class Program
+{
+}

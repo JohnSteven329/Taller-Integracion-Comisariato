@@ -27,6 +27,8 @@ Integración de dos aplicaciones independientes, desarrolladas en Java y .NET, s
 - `database/`: scripts compartidos de base de datos.
 - `docs/`: documentación acordada por el equipo; las capturas y exportaciones locales están ignoradas.
 - `postman/`: pruebas de las APIs.
+- `bruno/`: colección de Bruno de la API .NET (17 peticiones).
+- `dotnet-api-tests/`: pruebas automatizadas de la API .NET (xUnit).
 
 ---
 
@@ -74,6 +76,7 @@ Recursos disponibles:
 - Swagger UI: `http://localhost:5080/swagger`
 - OpenAPI JSON: `http://localhost:5080/swagger/v1/swagger.json`
 - Health check: `http://localhost:5080/health`
+- Menú web de operaciones: `http://localhost:5080/menu.html`
 
 ### Endpoints
 
@@ -158,6 +161,25 @@ La implementación está alineada con estos objetos del SQL de `main`:
 | `public.movimientosinventario` | Fuente de la consulta de movimientos por producto. |
 
 Las validaciones de existencia, estado y stock se realizan dentro de la misma transacción del servicio. Los productos y las ventas se bloquean antes de invocar los procedimientos. Cada intento utiliza una conexión y una transacción nuevas; Polly realiza un único reintento después de un segundo ante `40P01` o `40001`.
+
+### Pruebas
+
+- Pruebas automatizadas (xUnit):
+
+  ```bash
+  dotnet test dotnet-api-tests/Comisariato.Api.Tests.csproj
+  ```
+
+  Verifican el manejo del HTTP 500 y el reintento de Polly ante deadlock.
+
+- Pruebas de extremo a extremo con la colección de Bruno incluida en `bruno/`:
+
+  ```bash
+  bru run bruno/Comisariato-API-DotNet --env Demo
+  ```
+
+  17 peticiones y 24 pruebas; requiere una base limpia (facturas `F-DEMO-001` y
+  `F-DEMO-002`).
 
 ### Errores y registros
 

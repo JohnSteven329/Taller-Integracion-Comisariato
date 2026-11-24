@@ -1,0 +1,35 @@
+info:
+  name: 06 - Stock insuficiente
+  type: http
+  seq: 6
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/ventas"
+  body:
+    type: json
+    data: |-
+      {
+        "numeroFactura": "F-DEMO-SINSTOCK",
+        "clienteId": 1,
+        "empleadoId": 1,
+        "formaPago": "Tarjeta",
+        "productoId": 1,
+        "cantidad": 999
+      }
+  auth: none
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Responde 422 Unprocessable Entity", function() {
+          expect(res.status).to.equal(422);
+          console.log("Rechazo: " + res.body.detail);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

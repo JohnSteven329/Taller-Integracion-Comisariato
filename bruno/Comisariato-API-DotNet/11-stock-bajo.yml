@@ -1,0 +1,31 @@
+info:
+  name: 11 - Stock bajo (después)
+  type: http
+  seq: 11
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/productos/stock-bajo"
+  auth: none
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Responde 200", function() {
+          expect(res.status).to.equal(200);
+          expect(res.body).to.be.an("array");
+        });
+        test("El producto 2 aparece bajo el mínimo", function() {
+          const p = res.body.find(x => x.productoId === 2);
+          expect(p).to.not.be.undefined;
+          expect(p.stock).to.equal(9);
+          expect(p.stockMinimo).to.equal(10);
+          console.log("Stock bajo: " + JSON.stringify(res.body));
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

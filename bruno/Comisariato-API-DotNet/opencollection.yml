@@ -1,0 +1,11 @@
+opencollection: 1.0.0
+
+info:
+  name: Comisariato-API-DotNet
+bundled: false
+extensions:
+  bruno:
+    defaultEnvironment: Demo
+    ignore:
+      - node_modules
+      - .git

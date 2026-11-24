@@ -1,0 +1,31 @@
+info:
+  name: 08 - Movimientos de inventario
+  type: http
+  seq: 8
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/productos/1/movimientos"
+  auth: none
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Responde 200", function() {
+          expect(res.status).to.equal(200);
+          expect(res.body).to.be.an("array");
+        });
+        test("Registra la salida por la venta", function() {
+          const mov = res.body.find(m => m.tipoMovimiento === "Salida" && m.referenciaId === bru.getVar("ventaId"));
+          expect(mov).to.not.be.undefined;
+          expect(mov.cantidad).to.equal(2);
+          expect(mov.stockNuevo).to.equal(91);
+          console.log("Movimiento: " + JSON.stringify(mov));
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

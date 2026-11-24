@@ -54,7 +54,6 @@ public sealed class GlobalExceptionMiddleware
 
             context.Response.Clear();
             context.Response.StatusCode = status;
-            context.Response.ContentType = "application/problem+json";
 
             var problem = new ProblemDetails
             {
@@ -66,7 +65,10 @@ public sealed class GlobalExceptionMiddleware
             };
             problem.Extensions["traceId"] = context.TraceIdentifier;
 
-            await context.Response.WriteAsJsonAsync(problem);
+            await context.Response.WriteAsJsonAsync(
+                problem,
+                options: null,
+                contentType: "application/problem+json");
         }
     }
 
