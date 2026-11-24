@@ -1,0 +1,300 @@
+{
+  "info": {
+    "name": "Comisariato - API Java",
+    "description": "Cinco endpoints REST de Spring Boot. Ejecutar 01 a 05 en orden, sobre la base de demostración. Las solicitudes 04 y 05 escriben datos; la anulación recupera el stock y conserva la auditoría. Si una solicitud falla, detenerse y verificar la base antes de repetir.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8080",
+      "type": "string"
+    },
+    {
+      "key": "productoId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "empleadoId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "clienteId",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "numeroFactura",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "ventaId",
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "01 - Consultar productos con stock bajo",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Respuesta JSON con arreglo\", function () { pm.expect(pm.response.json()).to.be.an(\"array\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/productos/stock-bajo",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "productos",
+            "stock-bajo"
+          ]
+        },
+        "description": "Un arreglo vacío es válido si no hay productos con stock bajo."
+      },
+      "response": []
+    },
+    {
+      "name": "02 - Consultar movimientos de inventario",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Respuesta JSON con arreglo\", function () { pm.expect(pm.response.json()).to.be.an(\"array\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/productos/{{productoId}}/movimientos",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "productos",
+            "{{productoId}}",
+            "movimientos"
+          ]
+        },
+        "description": "Consulta los movimientos del producto de prueba."
+      },
+      "response": []
+    },
+    {
+      "name": "03 - Consultar ventas por empleado",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "pm.test(\"Respuesta JSON con arreglo\", function () { pm.expect(pm.response.json()).to.be.an(\"array\"); });"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/empleados/{{empleadoId}}/ventas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "empleados",
+            "{{empleadoId}}",
+            "ventas"
+          ]
+        },
+        "description": "Consulta las ventas del empleado de prueba."
+      },
+      "response": []
+    },
+    {
+      "name": "04 - Registrar venta",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (pm.collectionVariables.get(\"ventaId\")) {",
+              "    console.warn(\"Hay una venta de prueba pendiente de anular. Anúlala antes de registrar otra.\");",
+              "    pm.execution.skipRequest();",
+              "} else {",
+              "    pm.collectionVariables.set(\"numeroFactura\", \"JPM-\" + Date.now());",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 201\", function () { pm.response.to.have.status(201); });",
+              "if (pm.response.code === 201) {",
+              "    const venta = pm.response.json();",
+              "    pm.test(\"Venta completada y factura correcta\", function () {",
+              "        pm.expect(venta.estado).to.eql(\"Completada\");",
+              "        pm.expect(venta.numeroFactura).to.eql(pm.collectionVariables.get(\"numeroFactura\"));",
+              "        pm.expect(venta.ventaId).to.be.a(\"number\").and.to.be.above(0);",
+              "    });",
+              "    if (Number.isInteger(venta.ventaId) && venta.ventaId > 0 && venta.estado === \"Completada\" && venta.numeroFactura === pm.collectionVariables.get(\"numeroFactura\")) {",
+              "        pm.collectionVariables.set(\"ventaId\", String(venta.ventaId));",
+              "    }",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/ventas",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "ventas"
+          ]
+        },
+        "description": "Crea una factura única y guarda el ID devuelto. Usar exclusivamente en la base de demostración. No volver a enviar hasta anular la venta anterior.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"numeroFactura\": \"{{numeroFactura}}\",\n  \"clienteId\": {{clienteId}},\n  \"empleadoId\": {{empleadoId}},\n  \"formaPago\": \"Efectivo\",\n  \"productoId\": {{productoId}},\n  \"cantidad\": 2\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "05 - Anular venta registrada",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "if (!/^\\d+$/.test(pm.collectionVariables.get(\"ventaId\") || \"\")) {",
+              "    console.warn(\"Primero ejecuta Registrar venta y comprueba que devuelva HTTP 201.\");",
+              "    pm.execution.skipRequest();",
+              "}"
+            ]
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"HTTP 200\", function () { pm.response.to.have.status(200); });",
+              "if (pm.response.code === 200) {",
+              "    const venta = pm.response.json();",
+              "    pm.test(\"Venta anulada y mismo ID\", function () {",
+              "        pm.expect(venta.estado).to.eql(\"Anulada\");",
+              "        pm.expect(String(venta.ventaId)).to.eql(pm.collectionVariables.get(\"ventaId\"));",
+              "        pm.expect(venta.numeroFactura).to.eql(pm.collectionVariables.get(\"numeroFactura\"));",
+              "    });",
+              "    if (venta.estado === \"Anulada\" && String(venta.ventaId) === pm.collectionVariables.get(\"ventaId\") && venta.numeroFactura === pm.collectionVariables.get(\"numeroFactura\")) {",
+              "        pm.collectionVariables.set(\"ventaId\", \"\");",
+              "    }",
+              "}"
+            ]
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/api/ventas/{{ventaId}}/anular",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "api",
+            "ventas",
+            "{{ventaId}}",
+            "anular"
+          ]
+        },
+        "description": "Anula exclusivamente la venta creada por la solicitud anterior. Tras la anulación correcta, borra la variable de ID.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"empleadoId\": {{empleadoId}}\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "response": []
+    }
+  ]
+}
