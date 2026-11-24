@@ -1,0 +1,23 @@
+info:
+  name: 01 - Health check
+  type: http
+  seq: 1
+
+http:
+  method: GET
+  url: "{{baseUrl}}/health"
+  auth: none
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("La API responde 200", function() {
+          expect(res.status).to.equal(200);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

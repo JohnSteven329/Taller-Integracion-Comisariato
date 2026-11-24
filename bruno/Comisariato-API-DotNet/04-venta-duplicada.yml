@@ -1,0 +1,35 @@
+info:
+  name: 04 - Factura duplicada
+  type: http
+  seq: 4
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/ventas"
+  body:
+    type: json
+    data: |-
+      {
+        "numeroFactura": "F-DEMO-001",
+        "clienteId": 1,
+        "empleadoId": 1,
+        "formaPago": "Efectivo",
+        "productoId": 1,
+        "cantidad": 1
+      }
+  auth: none
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Responde 409 Conflict", function() {
+          expect(res.status).to.equal(409);
+          console.log("Duplicado rechazado: " + res.body.title);
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

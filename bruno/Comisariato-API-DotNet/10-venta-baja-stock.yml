@@ -1,0 +1,39 @@
+info:
+  name: 10 - Venta que deja stock bajo
+  type: http
+  seq: 10
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/ventas"
+  body:
+    type: json
+    data: |-
+      {
+        "numeroFactura": "F-DEMO-002",
+        "clienteId": 2,
+        "empleadoId": 1,
+        "formaPago": "Transferencia",
+        "productoId": 2,
+        "cantidad": 31
+      }
+  auth: none
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Responde 201 con totales del SP", function() {
+          expect(res.status).to.equal(201);
+          expect(res.body.subtotal).to.equal(120.90);
+          expect(res.body.iva).to.equal(18.14);
+          expect(res.body.total).to.equal(139.04);
+          bru.setVar("venta2Id", res.body.ventaId);
+          console.log("Venta 2: " + JSON.stringify(res.body));
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

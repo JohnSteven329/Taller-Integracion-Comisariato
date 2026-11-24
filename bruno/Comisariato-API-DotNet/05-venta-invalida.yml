@@ -1,0 +1,36 @@
+info:
+  name: 05 - Validación del request
+  type: http
+  seq: 5
+
+http:
+  method: POST
+  url: "{{baseUrl}}/api/ventas"
+  body:
+    type: json
+    data: |-
+      {
+        "numeroFactura": "F-DEMO-INVALIDA",
+        "formaPago": "Bitcoin",
+        "productoId": 1,
+        "cantidad": 0
+      }
+  auth: none
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Responde 400 Bad Request", function() {
+          expect(res.status).to.equal(400);
+        });
+        test("Devuelve los errores de validación", function() {
+          expect(res.body.errors).to.be.an("object");
+          console.log("Errores: " + Object.keys(res.body.errors).join(", "));
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

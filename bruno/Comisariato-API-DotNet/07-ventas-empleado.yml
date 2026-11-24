@@ -1,0 +1,29 @@
+info:
+  name: 07 - Ventas por empleado
+  type: http
+  seq: 7
+
+http:
+  method: GET
+  url: "{{baseUrl}}/api/empleados/1/ventas"
+  auth: none
+
+runtime:
+  scripts:
+    - type: tests
+      code: |-
+        test("Responde 200", function() {
+          expect(res.status).to.equal(200);
+          expect(res.body).to.be.an("array");
+        });
+        test("Incluye la venta registrada", function() {
+          const venta = res.body.find(v => v.numeroFactura === "F-DEMO-001");
+          expect(venta).to.not.be.undefined;
+          console.log("Ventas del empleado 1: " + JSON.stringify(res.body));
+        });
+
+settings:
+  encodeUrl: true
+  timeout: 0
+  followRedirects: true
+  maxRedirects: 5

@@ -1,4 +1,4 @@
-﻿# Java
+# Java
 target/
 *.class
 *.jar
@@ -15,6 +15,7 @@ obj/
 # IDE
 .idea/
 .vscode/
+*.iml
 
 # Credenciales y configuraciones locales
 .env
@@ -23,13 +24,50 @@ obj/
 application-local.yml
 application.yml
 appsettings.Development.json
+!dotnet-api/appsettings.Development.json
 appsettings.Local.json
 
 # Respaldo privado de la BD
 database/Comisariato.sql
+*.dump
+*.backup
+*.sql.gz
+
+# Capturas, videos y evidencia multimedia local
+capturas/
+screenshots/
+videos/
+docs/capturas/
+docs/screenshots/
+docs/evidencias/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.bmp
+*.mp4
+*.mov
+*.avi
+*.mkv
+*.webm
+
+# Documentos exportados (los entregables se comparten por el canal indicado)
+*.pdf
+*.doc
+*.docx
+*.ppt
+*.pptx
+*.xls
+*.xlsx
+~$*
 
 # Archivos temporales
 *.log
 *.tmp
+*.temp
+*.bak
+*.zip
+*~
 Thumbs.db
 .DS_Store

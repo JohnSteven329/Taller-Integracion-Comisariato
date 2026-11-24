@@ -1,0 +1,7 @@
+name: Demo
+variables:
+  - name: baseUrl
+    value: http://127.0.0.1:5080
+    enabled: true
+    secret: false
+    description: API .NET local del taller
