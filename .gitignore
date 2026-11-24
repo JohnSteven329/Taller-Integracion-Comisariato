@@ -1,0 +1,35 @@
+﻿# Java
+target/
+*.class
+*.jar
+*.war
+.gradle/
+
+# .NET
+bin/
+obj/
+.vs/
+*.user
+*.suo
+
+# IDE
+.idea/
+.vscode/
+
+# Credenciales y configuraciones locales
+.env
+.env.*
+!.env.example
+application-local.yml
+application.yml
+appsettings.Development.json
+appsettings.Local.json
+
+# Respaldo privado de la BD
+database/Comisariato.sql
+
+# Archivos temporales
+*.log
+*.tmp
+Thumbs.db
+.DS_Store
